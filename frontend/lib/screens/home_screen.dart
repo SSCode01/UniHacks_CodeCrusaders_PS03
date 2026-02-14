@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
+import 'create_group_screen.dart';
+import 'notifications_screen.dart';
+import 'on_this_day_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -55,47 +58,348 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0D1B2A),
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            // Sticky Header
-            SliverAppBar(
-              floating: false,
-              pinned: true,
-              backgroundColor: const Color(0xFF0D1B2A).withOpacity(0.95),
-              elevation: 0,
-              surfaceTintColor: Colors.transparent,
-              flexibleSpace: Container(
-                decoration: const BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Color(0xFF2D2D44),
-                      width: 1,
+      appBar: AppBar(
+        toolbarHeight: 100,
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color(0xFF0D1B2A).withOpacity(0.95),
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: Color(0xFF2D2D44),
+                width: 1,
+              ),
+            ),
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Hey $userName! 👋',
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'Time to vibe check your squad',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFFA1A1B5),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationsScreen(),
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(50),
+                    child: Stack(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1B263B),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: const Icon(
+                            Icons.notifications_rounded,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryPink,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 24, 24, 100),
+          child: Column(
+            children: [
+              // Today's Prompt Card
+              _buildAnimatedCard(
+                delay: 0,
+                child: _GradientCard(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [AppColors.primaryPink, AppColors.primaryPurple],
+                  ),
+                  onTap: () {
+                    // Navigate to prompt voting
+                  },
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              'Hey $userName! 👋',
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.white,
-                                letterSpacing: -0.5,
+                            const Text(
+                              'Today\'s Prompt',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFFA1A1B5),
                               ),
                             ),
                             const SizedBox(height: 4),
                             const Text(
-                              'Time to vibe check your squad',
+                              'Who would survive a zombie apocalypse? 🧟',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Tap to vote',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF00F5FF),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text('🎯', style: TextStyle(fontSize: 40)),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Stats Row
+              _buildAnimatedCard(
+                delay: 100,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _StatCard(
+                        icon: Icons.local_fire_department_rounded,
+                        iconColor: AppColors.primaryPink,
+                        value: userStreak.toString(),
+                        label: 'Day Streak',
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _StatCard(
+                        emoji: '⭐',
+                        value: userPoints.toString(),
+                        label: 'Total Points',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // On This Day Card
+              _buildAnimatedCard(
+                delay: 150,
+                child: _GradientCard(
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFFFF9A44), Color(0xFFFF4D4D)],
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OnThisDayScreen(),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'On This Day',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            const Text(
+                              'Relive old chaos',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'View memories 📸',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text('🗓️', style: TextStyle(fontSize: 40)),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Your Squads Section Header
+              _buildAnimatedCard(
+                delay: 200,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Your Squads',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CreateGroupScreen(),
+                          ),
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(50),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [AppColors.primaryPink, AppColors.primaryPurple],
+                          ),
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Group Cards
+              ...groups.asMap().entries.map((entry) {
+                int index = entry.key;
+                Map<String, dynamic> group = entry.value;
+                return _buildAnimatedCard(
+                  delay: 250 + (index * 50),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: _GroupCard(
+                      emoji: group['emoji'],
+                      name: group['name'],
+                      memberCount: group['members'],
+                      chaosLevel: group['chaosLevel'],
+                      onTap: () {
+                        // Navigate to group detail
+                      },
+                    ),
+                  ),
+                );
+              }).toList(),
+
+              const SizedBox(height: 12),
+
+              // Time Capsule Card
+              _buildAnimatedCard(
+                delay: 350,
+                child: _GradientCard(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [AppColors.primaryBlue, AppColors.primaryPurple],
+                  ),
+                  onTap: () {
+                    // Navigate to time capsule
+                  },
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.inventory_2_rounded,
+                              color: AppColors.primaryBlue,
+                              size: 32,
+                              ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Time Capsule',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            const Text(
+                              'Unlocks in 2 days 👀',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Color(0xFFA1A1B5),
@@ -104,251 +408,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           ],
                         ),
                       ),
-                      InkWell(
-                        onTap: () {
-                          // Navigate to notifications
-                        },
-                        borderRadius: BorderRadius.circular(50),
-                        child: Stack(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF1B263B),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: const Icon(
-                                Icons.notifications_rounded,
-                                color: Colors.white,
-                                size: 24,
-                              ),
-                            ),
-                            Positioned(
-                              top: 8,
-                              right: 8,
-                              child: Container(
-                                width: 8,
-                                height: 8,
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryPink,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      const Text('📦', style: TextStyle(fontSize: 50)),
                     ],
                   ),
                 ),
               ),
-            ),
 
-            // Content
-            SliverPadding(
-              padding: const EdgeInsets.all(24),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  // Today's Prompt Card
-                  _buildAnimatedCard(
-                    delay: 0,
-                    child: _GradientCard(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [AppColors.primaryPink, AppColors.primaryPurple],
-                      ),
-                      onTap: () {
-                        // Navigate to prompt voting
-                      },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Today\'s Prompt',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xFFA1A1B5),
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                const Text(
-                                  'Who would survive a zombie apocalypse? 🧟',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                const Text(
-                                  'Tap to vote',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFF00F5FF),
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Text('🎯', style: TextStyle(fontSize: 40)),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Stats Row
-                  _buildAnimatedCard(
-                    delay: 100,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: _StatCard(
-                            icon: Icons.local_fire_department_rounded,
-                            iconColor: AppColors.primaryPink,
-                            value: userStreak.toString(),
-                            label: 'Day Streak',
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _StatCard(
-                            emoji: '⭐',
-                            value: userPoints.toString(),
-                            label: 'Total Points',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Your Squads Section Header
-                  _buildAnimatedCard(
-                    delay: 200,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Your Squads',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            // Navigate to create group
-                          },
-                          borderRadius: BorderRadius.circular(50),
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [AppColors.primaryPink, AppColors.primaryPurple],
-                              ),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: const Icon(
-                              Icons.add,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Group Cards
-                  ...groups.asMap().entries.map((entry) {
-                    int index = entry.key;
-                    Map<String, dynamic> group = entry.value;
-                    return _buildAnimatedCard(
-                      delay: 250 + (index * 50),
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: _GroupCard(
-                          emoji: group['emoji'],
-                          name: group['name'],
-                          memberCount: group['members'],
-                          chaosLevel: group['chaosLevel'],
-                          onTap: () {
-                            // Navigate to group detail
-                          },
-                        ),
-                      ),
-                    );
-                  }).toList(),
-
-                  const SizedBox(height: 12),
-
-                  // Time Capsule Card
-                  _buildAnimatedCard(
-                    delay: 350,
-                    child: _GradientCard(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [AppColors.primaryBlue, AppColors.primaryPurple],
-                      ),
-                      onTap: () {
-                        // Navigate to time capsule
-                      },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  Icons.inventory_2_rounded,
-                                  color: AppColors.primaryBlue,
-                                  size: 32,
-                                ),
-                                const SizedBox(height: 8),
-                                const Text(
-                                  'Time Capsule',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                const Text(
-                                  'Unlocks in 2 days 👀',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFFA1A1B5),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Text('📦', style: TextStyle(fontSize: 50)),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-                ]),
-              ),
-            ),
-          ],
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );
