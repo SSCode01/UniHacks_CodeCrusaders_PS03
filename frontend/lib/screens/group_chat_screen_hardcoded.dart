@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/emoji_avatar.dart';
 
 class ChatMessage {
@@ -21,33 +20,9 @@ class ChatMessage {
     required this.message,
     required this.timestamp,
   });
-
-  factory ChatMessage.fromFirestore(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    return ChatMessage(
-      id: doc.id,
-      groupId: data['groupId'] ?? '',
-      senderId: data['senderId'] ?? '',
-      senderName: data['senderName'] ?? '',
-      senderEmoji: data['senderEmoji'] ?? '😎',
-      message: data['message'] ?? '',
-      timestamp: (data['timestamp'] as Timestamp).toDate(),
-    );
-  }
-
-  Map<String, dynamic> toFirestore() {
-    return {
-      'groupId': groupId,
-      'senderId': senderId,
-      'senderName': senderName,
-      'senderEmoji': senderEmoji,
-      'message': message,
-      'timestamp': Timestamp.fromDate(timestamp),
-    };
-  }
 }
 
-class GroupChatScreen extends StatefulWidget {
+class GroupChatScreenHardcoded extends StatefulWidget {
   final String groupId;
   final String groupName;
   final String groupEmoji;
@@ -55,7 +30,7 @@ class GroupChatScreen extends StatefulWidget {
   final String currentUserName;
   final String currentUserEmoji;
 
-  const GroupChatScreen({
+  const GroupChatScreenHardcoded({
     super.key,
     required this.groupId,
     required this.groupName,
@@ -66,13 +41,19 @@ class GroupChatScreen extends StatefulWidget {
   });
 
   @override
-  State<GroupChatScreen> createState() => _GroupChatScreenState();
+  State<GroupChatScreenHardcoded> createState() => _GroupChatScreenHardcodedState();
 }
 
-class _GroupChatScreenState extends State<GroupChatScreen> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+class _GroupChatScreenHardcodedState extends State<GroupChatScreenHardcoded> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  late List<ChatMessage> _messages;
+
+  @override
+  void initState() {
+    super.initState();
+    _messages = _getInitialMessages();
+  }
 
   @override
   void dispose() {
@@ -81,100 +62,17 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     super.dispose();
   }
 
-  Future<void> _sendMessage() async {
-    if (_messageController.text.trim().isEmpty) return;
-
-    final message = ChatMessage(
-      id: '',
-      groupId: widget.groupId,
-      senderId: widget.currentUserId,
-      senderName: widget.currentUserName,
-      senderEmoji: widget.currentUserEmoji,
-      message: _messageController.text.trim(),
-      timestamp: DateTime.now(),
-    );
-
-    try {
-      await _firestore
-          .collection('groups')
-          .doc(widget.groupId)
-          .collection('messages')
-          .add(message.toFirestore());
-
-      _messageController.clear();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error sending message: $e')),
-      );
-    }
-  }
-
-  Future<List<ChatMessage>> _loadMessages() async {
-    try {
-      final snapshot = await _firestore
-          .collection('groups')
-          .doc(widget.groupId)
-          .collection('messages')
-          .orderBy('timestamp', descending: true)
-          .limit(50)
-          .get()
-          .timeout(
-            const Duration(seconds: 3),
-            onTimeout: () {
-              throw Exception('Firebase connection timeout');
-            },
-          );
-
-      return snapshot.docs
-          .map((doc) => ChatMessage.fromFirestore(doc))
-          .toList();
-    } on Exception catch (e) {
-      // If Firebase fails, throw error to trigger mock data display
-      throw Exception('Firebase not available: $e');
-    } catch (e) {
-      // Catch any other errors (including Firebase initialization errors)
-      throw Exception('Firebase not available: $e');
-    }
-  }
-
-  List<ChatMessage> _getMockMessages() {
+  List<ChatMessage> _getInitialMessages() {
     final now = DateTime.now();
     return [
       ChatMessage(
-        id: '1',
-        groupId: widget.groupId,
-        senderId: 'user_2',
-        senderName: 'Alice',
-        senderEmoji: '🎨',
-        message: 'Hey everyone! Ready for today\'s challenge? 🔥',
-        timestamp: now.subtract(const Duration(minutes: 30)),
-      ),
-      ChatMessage(
-        id: '2',
-        groupId: widget.groupId,
-        senderId: 'user_3',
-        senderName: 'Bob',
-        senderEmoji: '🚀',
-        message: 'Absolutely! Let\'s do this! 💪',
-        timestamp: now.subtract(const Duration(minutes: 25)),
-      ),
-      ChatMessage(
-        id: '3',
+        id: '6',
         groupId: widget.groupId,
         senderId: widget.currentUserId,
         senderName: widget.currentUserName,
         senderEmoji: widget.currentUserEmoji,
-        message: 'I\'m in! This is going to be fun! 🎉',
-        timestamp: now.subtract(const Duration(minutes: 20)),
-      ),
-      ChatMessage(
-        id: '4',
-        groupId: widget.groupId,
-        senderId: 'user_2',
-        senderName: 'Alice',
-        senderEmoji: '🎨',
-        message: 'Did anyone complete yesterday\'s prompt?',
-        timestamp: now.subtract(const Duration(minutes: 15)),
+        message: 'Same here! Can\'t wait to see the results 👀',
+        timestamp: now.subtract(const Duration(minutes: 5)),
       ),
       ChatMessage(
         id: '5',
@@ -186,15 +84,74 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         timestamp: now.subtract(const Duration(minutes: 10)),
       ),
       ChatMessage(
-        id: '6',
+        id: '4',
+        groupId: widget.groupId,
+        senderId: 'user_2',
+        senderName: 'Alice',
+        senderEmoji: '🎨',
+        message: 'Did anyone complete yesterday\'s prompt?',
+        timestamp: now.subtract(const Duration(minutes: 15)),
+      ),
+      ChatMessage(
+        id: '3',
         groupId: widget.groupId,
         senderId: widget.currentUserId,
         senderName: widget.currentUserName,
         senderEmoji: widget.currentUserEmoji,
-        message: 'Same here! Can\'t wait to see the results 👀',
-        timestamp: now.subtract(const Duration(minutes: 5)),
+        message: 'I\'m in! This is going to be fun! 🎉',
+        timestamp: now.subtract(const Duration(minutes: 20)),
       ),
-    ].reversed.toList(); // Reverse to show oldest first
+      ChatMessage(
+        id: '2',
+        groupId: widget.groupId,
+        senderId: 'user_3',
+        senderName: 'Bob',
+        senderEmoji: '🚀',
+        message: 'Absolutely! Let\'s do this! 💪',
+        timestamp: now.subtract(const Duration(minutes: 25)),
+      ),
+      ChatMessage(
+        id: '1',
+        groupId: widget.groupId,
+        senderId: 'user_2',
+        senderName: 'Alice',
+        senderEmoji: '🎨',
+        message: 'Hey everyone! Ready for today\'s challenge? 🔥',
+        timestamp: now.subtract(const Duration(minutes: 30)),
+      ),
+    ];
+  }
+
+  void _sendMessage() {
+    if (_messageController.text.trim().isEmpty) return;
+
+    setState(() {
+      _messages.insert(
+        0,
+        ChatMessage(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          groupId: widget.groupId,
+          senderId: widget.currentUserId,
+          senderName: widget.currentUserName,
+          senderEmoji: widget.currentUserEmoji,
+          message: _messageController.text.trim(),
+          timestamp: DateTime.now(),
+        ),
+      );
+    });
+
+    _messageController.clear();
+
+    // Scroll to bottom after sending
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   @override
@@ -240,124 +197,52 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
       ),
       body: Column(
         children: [
+          // Info banner
+          Container(
+            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1B263B),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: const Color(0xFFFF006E).withOpacity(0.3),
+              ),
+            ),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.info_outline,
+                  color: Color(0xFFFF006E),
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Text(
+                    'Demo Mode - Messages are stored locally',
+                    style: TextStyle(
+                      color: Color(0xFFA1A1B5),
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
           // Messages List
           Expanded(
-            child: FutureBuilder<List<ChatMessage>>(
-              future: _loadMessages(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: Color(0xFFFF006E),
-                    ),
-                  );
-                }
+            child: ListView.builder(
+              controller: _scrollController,
+              reverse: true,
+              padding: const EdgeInsets.all(16),
+              itemCount: _messages.length,
+              itemBuilder: (context, index) {
+                final message = _messages[index];
+                final isMe = message.senderId == widget.currentUserId;
+                final showAvatar = index == 0 ||
+                    _messages[index - 1].senderId != message.senderId;
 
-                // If there's an error (e.g., Firebase not configured), show mock data
-                if (snapshot.hasError) {
-                  final mockMessages = _getMockMessages();
-                  
-                  return Column(
-                    children: [
-                      // Info banner
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        margin: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1B263B),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: const Color(0xFFFF006E).withOpacity(0.3),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.info_outline,
-                              color: Color(0xFFFF006E),
-                              size: 20,
-                            ),
-                            const SizedBox(width: 12),
-                            const Expanded(
-                              child: Text(
-                                'Test Mode - Showing mock messages',
-                                style: TextStyle(
-                                  color: Color(0xFFA1A1B5),
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Mock messages
-                      Expanded(
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          reverse: true,
-                          padding: const EdgeInsets.all(16),
-                          itemCount: mockMessages.length,
-                          itemBuilder: (context, index) {
-                            final message = mockMessages[index];
-                            final isMe = message.senderId == widget.currentUserId;
-                            final showAvatar = index == 0 ||
-                                mockMessages[index - 1].senderId != message.senderId;
-
-                            return _buildMessageBubble(message, isMe, showAvatar);
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                }
-
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          '💬',
-                          style: TextStyle(fontSize: 64),
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'No messages yet',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Start the chaos! 🔥',
-                          style: TextStyle(
-                            color: Color(0xFFA1A1B5),
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                final messages = snapshot.data!;
-
-                return ListView.builder(
-                  controller: _scrollController,
-                  reverse: true,
-                  padding: const EdgeInsets.all(16),
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    final message = messages[index];
-                    final isMe = message.senderId == widget.currentUserId;
-                    final showAvatar = index == 0 ||
-                        messages[index - 1].senderId != message.senderId;
-
-                    return _buildMessageBubble(message, isMe, showAvatar);
-                  },
-                );
+                return _buildMessageBubble(message, isMe, showAvatar);
               },
             ),
           ),

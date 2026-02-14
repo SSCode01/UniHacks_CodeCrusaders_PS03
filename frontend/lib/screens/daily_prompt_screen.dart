@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/emoji_avatar.dart';
 import '../widgets/funky_button.dart';
+import 'prompt_results_screen.dart';
 
 class DailyPromptScreen extends StatefulWidget {
   final String groupId;
@@ -145,7 +146,12 @@ class _DailyPromptScreenState extends State<DailyPromptScreen> {
               width: double.infinity,
               child: FunkyButton(
                 onPressed: () {
-                  // Navigate to results
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PromptResultsScreen(groupId: widget.groupId),
+                    ),
+                  );
                 },
                 text: "Lock in my vote 🗳️",
                 size: 'lg',
