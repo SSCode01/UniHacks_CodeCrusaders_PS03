@@ -12,6 +12,7 @@ import 'screens/home_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/leaderboard_screen.dart';
 import 'screens/on_this_day_screen.dart';
+import 'screens/group_chat_screen_hardcoded.dart';
 import 'screens/main_navigation.dart';
 
 class ScreenSelectorMenu extends StatelessWidget {
@@ -148,6 +149,19 @@ class ScreenSelectorMenu extends StatelessWidget {
             '📦 Create Capsule Screen',
             const CreateCapsuleScreen(groupId: '1'),
             Colors.lime,
+          ),
+          _buildScreenButton(
+            context,
+            '💬 Group Chat Screen',
+            const GroupChatScreenHardcoded(
+              groupId: '1',
+              groupName: 'Test Group',
+              groupEmoji: '🎮',
+              currentUserId: 'test_user_1',
+              currentUserName: 'Test User',
+              currentUserEmoji: '😎',
+            ),
+            Colors.lightBlue,
           ),
 
           const SizedBox(height: 40),

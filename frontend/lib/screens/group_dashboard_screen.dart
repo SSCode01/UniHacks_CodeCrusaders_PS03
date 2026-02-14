@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/colors.dart';
 import '../widgets/gradient_card.dart';
 import '../widgets/emoji_avatar.dart';
-import 'group_chat_screen.dart';
+import 'group_chat_screen_hardcoded.dart';
 import 'create_poll_screen.dart';
 import 'create_capsule_screen.dart';
 import 'daily_prompt_screen.dart';
@@ -118,7 +118,7 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => GroupChatScreen(
+                                  builder: (context) => GroupChatScreenHardcoded(
                                     groupId: widget.groupId,
                                     groupName: group['name'],
                                     groupEmoji: group['emoji'],
@@ -255,7 +255,7 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => GroupChatScreen(
+                    builder: (context) => GroupChatScreenHardcoded(
                       groupId: widget.groupId,
                       groupName: group['name'],
                       groupEmoji: group['emoji'],

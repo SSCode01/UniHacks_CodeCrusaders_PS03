@@ -228,7 +228,16 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
               width: double.infinity,
               child: FunkyButton(
                 onPressed: () {
-                  // Create poll
+                  // Show success message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Poll created successfully! 📊'),
+                      backgroundColor: Color(0xFF00F5FF),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                  
+                  // Navigate back to group dashboard
                   Navigator.pop(context);
                 },
                 text: "Drop the poll 📊",

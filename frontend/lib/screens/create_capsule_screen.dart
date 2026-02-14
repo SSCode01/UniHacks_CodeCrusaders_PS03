@@ -265,7 +265,16 @@ class _CreateCapsuleScreenState extends State<CreateCapsuleScreen> {
               width: double.infinity,
               child: FunkyButton(
                 onPressed: () {
-                  // Create capsule
+                  // Show success message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Time capsule locked! 🔒'),
+                      backgroundColor: Color(0xFFC0FF00),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                  
+                  // Navigate back to group dashboard
                   Navigator.pop(context);
                 },
                 text: "Lock it in 🔒",

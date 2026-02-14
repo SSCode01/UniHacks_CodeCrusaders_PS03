@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
 import '../widgets/funky_button.dart';
+import 'join_group_screen.dart';
 
 class CreateGroupScreen extends StatefulWidget {
   const CreateGroupScreen({super.key});
@@ -233,7 +234,12 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
             Center(
               child: TextButton(
                 onPressed: () {
-                  // Navigate to join group
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const JoinGroupScreen(),
+                    ),
+                  );
                 },
                 child: const Text(
                   'Or join an existing squad →',
