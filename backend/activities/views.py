@@ -17,7 +17,7 @@ from .serializers import (
     TimeCapsuleSerializer
 )
 from groups.models import Group, GroupMembership
-
+from django.db import models
 
 class DailyPromptListView(generics.ListCreateAPIView):
     """List and create daily prompts for a group"""
@@ -204,7 +204,6 @@ class TimeCapsuleDetailView(generics.RetrieveAPIView):
 @permission_classes([permissions.IsAuthenticated])
 def group_activity_summary(request, group_id):
     """Get activity summary for a group"""
-    from django.db import models
     
     group = get_object_or_404(Group, id=group_id)
     
