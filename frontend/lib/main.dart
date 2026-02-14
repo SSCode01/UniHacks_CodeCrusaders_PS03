@@ -1,27 +1,41 @@
 import 'package:flutter/material.dart';
-import 'screens/splash_screen.dart';
-import 'screens/profile_screen.dart';
+import 'package:flutter/services.dart';
+import 'test_menu.dart';
 
 void main() {
-  runApp(const ChaosClub());
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Set system UI overlay style
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Color(0xFF0D1B2A),
+      systemNavigationBarIconBrightness: Brightness.light,
+    ),
+  );
+  
+  runApp(const ChaosClubTester());
 }
 
-class ChaosClub extends StatelessWidget {
-  const ChaosClub({super.key});
+class ChaosClubTester extends StatelessWidget {
+  const ChaosClubTester({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'ChaosClub - Screen Tester',
       debugShowCheckedModeBanner: false,
-      title: 'ChaosClub',
       theme: ThemeData(
         useMaterial3: true,
         fontFamily: 'Poppins',
+        scaffoldBackgroundColor: const Color(0xFF0D1B2A),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFF48FB1),
+          brightness: Brightness.dark,
+        ),
       ),
-      home: const SplashScreen(),
+      home: const ScreenSelectorMenu(),
     );
   }
 }
-
-
-

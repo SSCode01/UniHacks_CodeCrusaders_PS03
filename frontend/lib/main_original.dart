@@ -1,0 +1,29 @@
+import 'package:chaos_club/screens/home_screen.dart';
+import 'package:chaos_club/screens/main_navigation.dart';
+import 'package:flutter/material.dart';
+import 'screens/splash_screen.dart';
+import 'screens/profile_screen.dart';
+
+void main() {
+  runApp(const ChaosClub());
+}
+
+class ChaosClub extends StatelessWidget {
+  const ChaosClub({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'ChaosClub',
+      theme: ThemeData(
+        useMaterial3: true,
+        fontFamily: 'Poppins',
+      ),
+      home: const MainNavigation(),
+    );
+  }
+}
+
+
+

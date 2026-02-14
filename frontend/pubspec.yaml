@@ -13,6 +13,19 @@ dependencies:
 
   cupertino_icons: ^1.0.8
 
+  # 🔥 Navigation
+  salomon_bottom_bar: ^3.3.2
+  http: ^1.1.0
+  dio: ^5.4.0  
+  shared_preferences: ^2.2.2
+  provider: ^6.1.1 
+  intl: ^0.18.1
+  image_picker: ^1.0.7
+  flutter_secure_storage: ^9.0.0
+  firebase_core: ^2.24.2
+  cloud_firestore: ^4.13.6
+  firebase_auth: ^4.15.3
+  cached_network_image: ^3.3.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -21,11 +34,11 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # ------------------ ASSETS ------------------
   assets:
     - assets/images/
+    # Add logo if you have it
+    # - assets/images/logo.png
 
-  # ------------------ FONTS ------------------
   fonts:
     - family: Poppins
       fonts:

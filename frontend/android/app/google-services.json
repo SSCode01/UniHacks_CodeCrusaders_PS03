@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "295344361867",
+    "project_id": "chaosclub-e857c",
+    "storage_bucket": "chaosclub-e857c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:295344361867:android:f6fb94c40258b780789f8e",
+        "android_client_info": {
+          "package_name": "com.example.chaos_club"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD118FWL8D-2q5OJayoDpw7AwEMOgsF3Gc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
