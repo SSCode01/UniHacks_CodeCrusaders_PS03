@@ -166,138 +166,201 @@ class _OnThisDayScreenState extends State<OnThisDayScreen> {
   }
 }
 
-class _MemoryCard extends StatelessWidget {
+class _MemoryCard extends StatefulWidget {
   final Map<String, dynamic> memory;
 
   const _MemoryCard({required this.memory});
 
   @override
+  State<_MemoryCard> createState() => _MemoryCardState();
+}
+
+class _MemoryCardState extends State<_MemoryCard> {
+  bool isLiked = false;
+  late int likeCount;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize with a random like count mostly for demo purposes
+    likeCount = (widget.memory['likes'] ?? 0) as int;
+  }
+
+  void _toggleLike() {
+    setState(() {
+      isLiked = !isLiked;
+      if (isLiked) {
+        likeCount++;
+      } else {
+        likeCount--;
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1B263B),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            // Image
-            CachedNetworkImage(
-              imageUrl: memory['imageUrl'],
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
-                color: const Color(0xFF2D2D44),
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: AppColors.primaryPink,
-                  ),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF1B263B),
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
                 ),
-              ),
-              errorWidget: (context, url, error) => Container(
-                color: const Color(0xFF2D2D44),
-                child: const Icon(Icons.error_outline, color: Colors.white),
-              ),
+              ],
             ),
-
-            // Gradient Overlay
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.8),
-                  ],
-                  stops: const [0.6, 1.0],
-                ),
-              ),
-            ),
-
-            // Content
-            Positioned(
-              bottom: 24,
-              left: 24,
-              right: 24,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Stack(
+                fit: StackFit.expand,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryPink,
-                      borderRadius: BorderRadius.circular(20),
+                  // Image
+                  CachedNetworkImage(
+                    imageUrl: widget.memory['imageUrl'],
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: const Color(0xFF2D2D44),
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primaryPink,
+                        ),
+                      ),
                     ),
-                    child: Text(
-                      '${memory['year']} • ${DateTime.now().year - memory['year'] as int} years ago',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+                    errorWidget: (context, url, error) => Container(
+                      color: const Color(0xFF2D2D44),
+                      child: const Icon(Icons.error_outline, color: Colors.white),
+                    ),
+                  ),
+
+                  // Gradient Overlay
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.8),
+                        ],
+                        stops: const [0.6, 1.0],
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  Text(
-                    memory['title'],
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    memory['caption'],
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.share_rounded, size: 18),
-                          label: const Text('Share to Squad'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            side: const BorderSide(color: Colors.white54),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+
+                  // Content
+                  Positioned(
+                    bottom: 24,
+                    left: 24,
+                    right: 24,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryPink,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '${widget.memory['year']} • ${DateTime.now().year - widget.memory['year'] as int} years ago',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
+                            const Spacer(),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.4),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.favorite, size: 12, color: isLiked ? AppColors.primaryPink : Colors.white),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '$likeCount',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          widget.memory['title'],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.favorite_border_rounded),
-                        color: Colors.white,
-                        style: IconButton.styleFrom(
-                          backgroundColor: Colors.white.withOpacity(0.1),
+                        const SizedBox(height: 8),
+                        Text(
+                          widget.memory['caption'],
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 24),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () {},
+                                icon: const Icon(Icons.share_rounded, size: 18),
+                                label: const Text('Share to Squad'),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  side: const BorderSide(color: Colors.white54),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            IconButton(
+                              onPressed: _toggleLike,
+                              icon: Icon(
+                                isLiked ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                                color: isLiked ? AppColors.primaryPink : Colors.white,
+                              ),
+                              style: IconButton.styleFrom(
+                                backgroundColor: Colors.white.withOpacity(0.1),
+                                padding: const EdgeInsets.all(12),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

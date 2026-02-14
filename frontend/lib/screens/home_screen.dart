@@ -3,6 +3,7 @@ import '../utils/colors.dart';
 import 'create_group_screen.dart';
 import 'notifications_screen.dart';
 import 'on_this_day_screen.dart';
+import 'group_dashboard_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -355,7 +356,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       memberCount: group['members'],
                       chaosLevel: group['chaosLevel'],
                       onTap: () {
-                        // Navigate to group detail
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GroupDashboardScreen(
+                              groupId: group['id'],
+                            ),
+                          ),
+                        );
                       },
                     ),
                   ),

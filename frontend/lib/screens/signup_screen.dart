@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
 import 'login_screen.dart';
+import 'daily_mood_screen.dart';
 
 class SignupScreen extends StatelessWidget {
   const SignupScreen({super.key});
@@ -143,7 +144,14 @@ class SignupScreen extends StatelessWidget {
                           BorderRadius.circular(30),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const DailyMoodScreen(),
+                      ),
+                    );
+                  },
                   child: const Text(
                     "Start the chaos 🚀",
                     style: TextStyle(

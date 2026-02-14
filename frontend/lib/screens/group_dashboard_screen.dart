@@ -6,11 +6,20 @@ import 'group_chat_screen_hardcoded.dart';
 import 'create_poll_screen.dart';
 import 'create_capsule_screen.dart';
 import 'daily_prompt_screen.dart';
+import 'games/games_hub_screen.dart';
+import 'leaderboard_screen.dart';
 
 class GroupDashboardScreen extends StatefulWidget {
   final String groupId;
+  final String? groupName;
+  final String? groupEmoji;
 
-  const GroupDashboardScreen({super.key, required this.groupId});
+  const GroupDashboardScreen({
+    super.key,
+    required this.groupId,
+    this.groupName,
+    this.groupEmoji,
+  });
 
   @override
   State<GroupDashboardScreen> createState() => _GroupDashboardScreenState();
@@ -19,18 +28,23 @@ class GroupDashboardScreen extends StatefulWidget {
 class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
   String activeTab = 'today';
 
-  // Mock data - Replace with actual API calls
-  final Map<String, dynamic> group = {
-    'name': 'Squad Goals',
-    'emoji': '🔥',
-    'chaosLevel': 'High',
-    'members': [
-      {'id': '1', 'name': 'You', 'avatar': '😎', 'isAdmin': true},
-      {'id': '2', 'name': 'Alex', 'avatar': '🤪', 'isAdmin': false},
-      {'id': '3', 'name': 'Sam', 'avatar': '🔥', 'isAdmin': false},
-      {'id': '4', 'name': 'Jordan', 'avatar': '✨', 'isAdmin': false},
-    ],
-  };
+  late Map<String, dynamic> group;
+
+  @override
+  void initState() {
+    super.initState();
+    group = {
+      'name': widget.groupName ?? 'Squad Goals',
+      'emoji': widget.groupEmoji ?? '🔥',
+      'chaosLevel': 'High',
+      'members': [
+        {'id': '1', 'name': 'You', 'avatar': '😎', 'isAdmin': true},
+        {'id': '2', 'name': 'Alex', 'avatar': '🤪', 'isAdmin': false},
+        {'id': '3', 'name': 'Sam', 'avatar': '🔥', 'isAdmin': false},
+        {'id': '4', 'name': 'Jordan', 'avatar': '✨', 'isAdmin': false},
+      ],
+    };
+  }
 
   // Current user data - Replace with actual data from your auth/storage
   final Map<String, String> currentUser = {
@@ -475,7 +489,16 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
         );
 
       case 'games':
-        return GradientCard(
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GamesHubScreen(groupId: widget.groupId),
+              ),
+            );
+          },
+          child: GradientCard(
           gradient: 'purple',
           child: Row(
             children: [
@@ -505,6 +528,8 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
               const Text('🎮', style: TextStyle(fontSize: 40)),
             ],
           ),
+        ),
+
         );
 
       case 'memories':
@@ -578,8 +603,17 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
         );
 
       case 'leaderboard':
-        return Column(
-          children: [
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const LeaderboardScreen(),
+              ),
+            );
+          },
+          child: Column(
+            children: [
             GradientCard(
               gradient: 'gold',
               child: Row(
@@ -656,7 +690,8 @@ class _GroupDashboardScreenState extends State<GroupDashboardScreen> {
               ),
             ),
           ],
-        );
+        ),
+      );
 
       default:
         return const Center(

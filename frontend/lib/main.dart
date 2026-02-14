@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'test_menu.dart';
+import 'screens/login_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +36,7 @@ class ChaosClubTester extends StatelessWidget {
           brightness: Brightness.dark,
         ),
       ),
-      home: const ScreenSelectorMenu(),
+      home: const LoginScreen(),
     );
   }
 }
