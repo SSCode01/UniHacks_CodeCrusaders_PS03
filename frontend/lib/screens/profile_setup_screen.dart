@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/colors.dart';
 import '../widgets/emoji_avatar.dart';
 import '../widgets/funky_button.dart';
-import 'daily_mood_screen.dart';
+import 'main_navigation.dart';
 
 class ProfileSetupScreen extends StatefulWidget {
   const ProfileSetupScreen({super.key});
@@ -37,7 +37,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     // Save user data
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const DailyMoodScreen()),
+      MaterialPageRoute(builder: (context) => const MainNavigation()),
     );
   }
 

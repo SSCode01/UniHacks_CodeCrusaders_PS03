@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
 import '../widgets/funky_button.dart';
+import 'group_dashboard_screen.dart';
 import 'join_group_screen.dart';
 
 class CreateGroupScreen extends StatefulWidget {
@@ -31,8 +32,18 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   void _createGroup() {
     if (_groupNameController.text.isEmpty) return;
-    // Create group logic
-    Navigator.pop(context);
+    
+    // Navigate to Group Dashboard with the new group details
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GroupDashboardScreen(
+          groupId: 'new_group_${DateTime.now().millisecondsSinceEpoch}',
+          groupName: _groupNameController.text,
+          groupEmoji: selectedEmoji,
+        ),
+      ),
+    );
   }
 
   @override

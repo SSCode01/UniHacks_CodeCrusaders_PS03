@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
 import 'main_navigation.dart';
+import 'profile_setup_screen.dart';
 
 class DailyMoodScreen extends StatefulWidget {
   const DailyMoodScreen({super.key});
@@ -37,7 +38,7 @@ class _DailyMoodScreenState extends State<DailyMoodScreen> {
     // Save mood selection
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const MainNavigation()),
+      MaterialPageRoute(builder: (context) => const ProfileSetupScreen()),
     );
   }
 
@@ -140,7 +141,7 @@ class _DailyMoodScreenState extends State<DailyMoodScreen> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const MainNavigation()),
+                        builder: (context) => const ProfileSetupScreen()),
                   );
                 },
                 child: const Text(
